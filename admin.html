@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Alex Morgan Portfolio</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            dark: {
+              950: '#070a13',
+              900: '#0b0f19',
+              850: '#0f172a',
+              800: '#1e293b',
+              700: '#334155',
+            },
+            neon: {
+              indigo: '#6366f1',
+              violet: '#8b5cf6',
+              cyan: '#06b6d4',
+              pink: '#ec4899',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-dark-950 text-slate-200 antialiased min-h-screen relative selection:bg-indigo-600 selection:text-white">
+
+  <!-- Ambient Glow Orbs -->
+  <div class="glow-orb-indigo top-0 left-1/4 -translate-x-1/2"></div>
+  <div class="glow-orb-purple top-1/2 right-0"></div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="border-b border-white/[0.08] bg-dark-950/80 backdrop-blur-xl sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-cyan-400 p-[1.5px] shadow-lg shadow-indigo-500/20">
+            <div class="w-full h-full bg-dark-900 rounded-[10px] flex items-center justify-center">
+              <span
+                class="font-display font-extrabold text-lg text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-300">AM</span>
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-display font-bold text-lg text-white">Portfolio Admin</span>
+            <span class="text-[11px] text-slate-400">Firebase Management Console</span>
+          </div>
+        </div>
+
+        <!-- Navigation Actions -->
+        <div class="flex items-center gap-3">
+          <a href="index.html"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium text-slate-300 hover:text-white bg-dark-900 border border-white/10 hover:border-white/20 transition-colors">
+            <i data-lucide="external-link" class="w-4 h-4 text-cyan-400"></i>
+            <span>View Live Site</span>
+          </a>
+
+          <!-- User Info & Logout (Visible when logged in) -->
+          <div id="authHeaderControls" class="hidden items-center gap-3">
+            <div class="hidden sm:flex flex-col text-right">
+              <span id="userEmailDisplay" class="text-xs font-semibold text-white">admin@portfolio.com</span>
+              <span class="text-[10px] text-emerald-400 flex items-center justify-end gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Authenticated
+              </span>
+            </div>
+            <button id="logoutBtn" type="button"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium text-red-300 hover:text-white bg-red-950/40 border border-red-500/30 hover:bg-red-600 transition-colors">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">Sign Out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== 1. AUTHENTICATION SECTION (Logged Out) ==================== -->
+  <section id="authSection" class="min-h-[calc(100vh-80px)] flex items-center justify-center p-4 py-12">
+    <div class="w-full max-w-md">
+      <!-- Glass Card -->
+      <div class="glass-panel rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl relative">
+        <div class="text-center mb-8">
+          <div
+            class="w-14 h-14 rounded-2xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-500/10">
+            <i data-lucide="lock" class="w-7 h-7"></i>
+          </div>
+          <h1 class="font-display text-2xl font-bold text-white" id="authFormTitle">Admin Portal Sign In</h1>
+          <p class="text-xs text-slate-400 mt-2" id="authFormSubtitle">
+            Log in to manage your portfolio case studies and dynamic content.
+          </p>
+        </div>
+
+        <!-- Auth Form -->
+        <form id="authForm" class="space-y-5">
+          <div>
+            <label for="authEmail" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              Email Address
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+              </div>
+              <input type="email" id="authEmail" required placeholder="admin@portfolio.com"
+                class="w-full pl-10 pr-4 py-3 rounded-xl bg-dark-950/90 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors text-sm">
+            </div>
+          </div>
+
+          <div>
+            <label for="authPassword" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              Password
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <i data-lucide="key" class="w-4 h-4"></i>
+              </div>
+              <input type="password" id="authPassword" required placeholder="••••••••••••" minlength="6"
+                class="w-full pl-10 pr-4 py-3 rounded-xl bg-dark-950/90 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors text-sm">
+            </div>
+          </div>
+
+          <!-- Auth Error Display -->
+          <div id="authErrorMsg"
+            class="hidden p-3 rounded-xl bg-red-950/60 border border-red-500/30 text-xs text-red-300 flex items-start gap-2.5">
+            <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0 mt-0.5 text-red-400"></i>
+            <span id="authErrorText">Invalid credentials</span>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="authSubmitBtn"
+            class="glow-button w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-xl shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:scale-[1.01] active:scale-[0.99] transition-all">
+            <span id="authBtnText">Sign In</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+
+          <!-- Toggle Sign In / Sign Up Mode -->
+          <div class="pt-4 border-t border-white/[0.08] text-center">
+            <p class="text-xs text-slate-400">
+              <span id="authTogglePrompt">First time setting up your admin account?</span>
+              <button type="button" id="authToggleBtn"
+                class="text-indigo-400 hover:text-indigo-300 font-semibold ml-1 underline transition-colors">
+                Create Admin Account
+              </button>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 2. ADMIN DASHBOARD (Logged In) ==================== -->
+  <main id="dashboardSection" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- Top Stats & Header Bar -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
+      <div>
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/80 border border-white/10 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-2">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+          <span>Portfolio Control Center</span>
+        </div>
+        <h1 class="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
+          Manage <span class="text-gradient-accent">Projects &amp; Case Studies</span>
+        </h1>
+        <p class="text-sm text-slate-400 mt-1">
+          Create, modify, and publish dynamic portfolio items synchronized with Firebase Firestore.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center gap-3">
+        <button type="button" id="seedDefaultBtn"
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-300 bg-slate-900 border border-white/10 hover:border-indigo-500/40 hover:text-white transition-all shadow-sm">
+          <i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i>
+          <span>Seed Initial Portfolio</span>
+        </button>
+
+        <button type="button" id="addNewProjectBtn"
+          class="glow-button inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition-all">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>Add New Project</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Metrics Strip -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div class="glass-card rounded-2xl p-5 border border-white/[0.08]">
+        <div class="text-xs text-slate-400 font-medium">Total Projects</div>
+        <div id="statTotalProjects" class="font-display text-2xl font-bold text-white mt-1">0</div>
+      </div>
+      <div class="glass-card rounded-2xl p-5 border border-white/[0.08]">
+        <div class="text-xs text-slate-400 font-medium">Branding Items</div>
+        <div id="statBranding" class="font-display text-2xl font-bold text-indigo-400 mt-1">0</div>
+      </div>
+      <div class="glass-card rounded-2xl p-5 border border-white/[0.08]">
+        <div class="text-xs text-slate-400 font-medium">UI/UX Platforms</div>
+        <div id="statUIUX" class="font-display text-2xl font-bold text-cyan-400 mt-1">0</div>
+      </div>
+      <div class="glass-card rounded-2xl p-5 border border-white/[0.08]">
+        <div class="text-xs text-slate-400 font-medium">Graphics &amp; 3D</div>
+        <div id="statGraphics" class="font-display text-2xl font-bold text-pink-400 mt-1">0</div>
+      </div>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-dark-900/60 border border-white/[0.08] mb-8">
+      <div class="relative w-full sm:w-80">
+        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <i data-lucide="search" class="w-4 h-4"></i>
+        </div>
+        <input type="text" id="dashboardSearch" placeholder="Search by title, tool, client..."
+          class="w-full pl-10 pr-4 py-2 rounded-xl bg-dark-950 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-xs sm:text-sm">
+      </div>
+
+      <div class="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+        <button type="button" data-admin-filter="all"
+          class="admin-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors">
+          All
+        </button>
+        <button type="button" data-admin-filter="branding"
+          class="admin-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-dark-950 text-slate-400 hover:text-white border border-white/10 transition-colors">
+          Branding
+        </button>
+        <button type="button" data-admin-filter="uiux"
+          class="admin-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-dark-950 text-slate-400 hover:text-white border border-white/10 transition-colors">
+          UI/UX
+        </button>
+        <button type="button" data-admin-filter="graphics"
+          class="admin-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-dark-950 text-slate-400 hover:text-white border border-white/10 transition-colors">
+          Graphics
+        </button>
+      </div>
+    </div>
+
+    <!-- Projects List Grid / Empty State -->
+    <div id="projectsLoadingState" class="py-20 text-center">
+      <div class="inline-block w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+      <p class="text-sm text-slate-400">Loading portfolio items from Firestore...</p>
+    </div>
+
+    <div id="projectsEmptyState" class="hidden py-16 text-center glass-panel rounded-3xl p-8 border border-white/10">
+      <div class="w-16 h-16 rounded-2xl bg-indigo-600/10 text-indigo-400 flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="folder-open" class="w-8 h-8"></i>
+      </div>
+      <h3 class="font-display text-xl font-bold text-white mb-2">No Projects Found in Firestore</h3>
+      <p class="text-sm text-slate-400 max-w-md mx-auto mb-6">
+        Your Firestore database doesn't have any portfolio items yet. You can add your first project or seed the 6 default showcase projects.
+      </p>
+      <div class="flex items-center justify-center gap-3">
+        <button type="button" onclick="document.getElementById('seedDefaultBtn').click();"
+          class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-colors">
+          Seed 6 Default Projects
+        </button>
+        <button type="button" onclick="document.getElementById('addNewProjectBtn').click();"
+          class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 bg-slate-800 hover:text-white border border-white/10 transition-colors">
+          Create New Project
+        </button>
+      </div>
+    </div>
+
+    <!-- Dynamic Admin Cards Grid -->
+    <div id="adminProjectsGrid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Injected via JavaScript -->
+    </div>
+
+  </main>
+
+  <!-- ==================== 3. ADD / EDIT PROJECT MODAL ==================== -->
+  <div id="projectEditModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-10 hidden" role="dialog"
+    aria-modal="true">
+    <!-- Backdrop -->
+    <div id="editModalBackdrop" class="absolute inset-0 bg-dark-950/85 backdrop-blur-md"></div>
+
+    <!-- Modal Box -->
+    <div
+      class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto glass-panel rounded-3xl border border-white/15 p-6 sm:p-8 shadow-2xl z-10">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-4 mb-6 border-b border-white/[0.08]">
+        <div>
+          <h3 id="modalFormHeading" class="font-display text-xl sm:text-2xl font-bold text-white">Add New Project</h3>
+          <p class="text-xs text-slate-400 mt-0.5">Fill in the case study details to display on your portfolio</p>
+        </div>
+        <button id="closeEditModalBtn" type="button" aria-label="Close modal"
+          class="p-2 rounded-full bg-dark-900 border border-white/10 text-slate-300 hover:text-white hover:bg-indigo-600 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Project Form -->
+      <form id="projectForm" class="space-y-4">
+        <input type="hidden" id="editProjectId" value="">
+
+        <!-- Title & Category -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="projectTitle" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              Project Title <span class="text-indigo-400">*</span>
+            </label>
+            <input type="text" id="projectTitle" required placeholder="e.g. Lumina Creative Studio"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-dark-950/90 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm">
+          </div>
+
+          <div>
+            <label for="projectCategory" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              Category <span class="text-indigo-400">*</span>
+            </label>
+            <select id="projectCategory" required
+              class="w-full px-3.5 py-2.5 rounded-xl bg-dark-950/90 border border-white/10 text-white focus:outline-none focus:border-indigo-500 text-sm appearance-none cursor-pointer">
+              <option value="branding">Branding &amp; Identity</option>
+              <option value="uiux">UI/UX Design</option>
+              <option value="graphics">Graphics &amp; 3D</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Subtitle / Tagline -->
+        <div>
+          <label for="projectSubtitle" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            Subtitle / Tagline
+          </label>
+          <input type="text" id="projectSubtitle" placeholder="e.g. Luxury Brand Identity & Editorial Packaging System"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-dark-950/90 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm">
+        </div>
+
+        <!-- Image URL & Preview -->
+        <div>
+          <label for="projectImage" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            Image URL / Relative Path <span class="text-indigo-400">*</span>
+          </label>
+          <div class="flex gap-2">
+            <input type="text" id="projectImage" required placeholder="assets/images/project1.jpg or https://..."
+              class="flex-1 px-3.5 py-2.5 rounded-xl bg-dark-950/90 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm">
+            <button type="button" id="previewImgBtn"
+              class="px-3.5 py-2.5 rounded-xl bg-dark-900 border border-white/10 text-xs font-medium text-slate-300 hover:text-white hover:border-indigo-500/40 transition-colors">
+              Preview
+            </button>
+          </div>
+          <!-- Image preview container -->
+          <div id="imgPreviewWrapper" class="mt-2.5 hidden">
+            <div class="aspect-[16/9] w-full max-w-sm rounded-xl overflow-hidden bg-dark-950 border border-white/10">
+              <img id="imgPreview" src="" alt="Preview" class="w-full h-full object-cover">
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label for="projectDescription" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            Project Description <span class="text-indigo-400">*</span>
+          </label>
+          <textarea id="projectDescription" rows="3" required placeholder="Describe the background, approach, and impact of the design project..."
+            class="w-full p-3.5 rounded-xl bg-dark-950/90 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm resize-none"></textarea>
+        </div>
+
+        <!-- Client & Timeline -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="projectClient" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              Client Name / Location
+            </label>
+            <input type="text" id="projectClient" placeholder="e.g. Lumina Studios, London"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-dark-950/90 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm">
+          </div>
+
+          <div>
+            <label for="projectTimeline" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              Timeline / Duration
+            </label>
+            <input type="text" id="projectTimeline" placeholder="e.g. 4 Weeks"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-dark-950/90 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm">
+          </div>
+        </div>
+
+        <!-- Tools (Comma Separated) & Key Impact Metric -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="projectTools" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              Tools Used (Comma Separated)
+            </label>
+            <input type="text" id="projectTools" placeholder="e.g. Adobe Illustrator, Photoshop, Cinema 4D"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-dark-950/90 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm">
+          </div>
+
+          <div>
+            <label for="projectStats" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              Impact Metric / Highlight
+            </label>
+            <input type="text" id="projectStats" placeholder="e.g. 120% Increase in client brand perception score"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-dark-950/90 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm">
+          </div>
+        </div>
+
+        <!-- Deliverables (Comma or Newline Separated) -->
+        <div>
+          <label for="projectDeliverables" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            Key Deliverables (Comma or Line Separated)
+          </label>
+          <input type="text" id="projectDeliverables" placeholder="e.g. Full Brand Guidelines, Stationery Suite, Custom Icons"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-dark-950/90 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm">
+        </div>
+
+        <!-- Form Submit & Cancel Actions -->
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-white/[0.08]">
+          <button type="button" id="cancelFormBtn"
+            class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-400 hover:text-white bg-dark-950 border border-white/10 transition-colors">
+            Cancel
+          </button>
+          <button type="submit" id="saveProjectBtn"
+            class="glow-button inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-all">
+            <span id="saveBtnText">Save Project</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== 4. DELETE CONFIRMATION MODAL ==================== -->
+  <div id="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden" role="dialog">
+    <div class="absolute inset-0 bg-dark-950/85 backdrop-blur-md"></div>
+    <div class="relative w-full max-w-sm glass-panel rounded-3xl border border-red-500/30 p-6 shadow-2xl z-10 text-center">
+      <div class="w-12 h-12 rounded-2xl bg-red-600/20 text-red-400 flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="trash-2" class="w-6 h-6"></i>
+      </div>
+      <h3 class="font-display text-lg font-bold text-white mb-2">Delete Portfolio Item?</h3>
+      <p class="text-xs text-slate-400 mb-6">
+        Are you sure you want to permanently delete "<span id="deleteItemTitle" class="text-slate-200 font-semibold"></span>"? This action cannot be undone.
+      </p>
+      <div class="flex items-center justify-center gap-3">
+        <button type="button" id="cancelDeleteBtn"
+          class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 bg-dark-950 border border-white/10 hover:text-white transition-colors">
+          Cancel
+        </button>
+        <button type="button" id="confirmDeleteBtn"
+          class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-red-600 hover:bg-red-500 transition-colors">
+          Delete Item
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 5. TOAST NOTIFICATION ==================== -->
+  <div id="adminToast"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-md w-full px-4 transition-all duration-300 opacity-0 invisible translate-y-5"
+    role="alert">
+    <div
+      class="glass-panel p-4 rounded-2xl border border-indigo-500/40 shadow-2xl shadow-indigo-600/30 flex items-center gap-3 bg-dark-900/95">
+      <div id="toastIconWrapper" class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+        <i data-lucide="check-circle" class="w-5 h-5"></i>
+      </div>
+      <div class="flex-1">
+        <div id="toastTitle" class="text-xs font-bold text-white">Notification</div>
+        <div id="toastMessage" class="text-xs text-slate-300 mt-0.5">Operation completed.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase v10 Modular SDK via ES Modules -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      doc,
+      setDoc,
+      addDoc,
+      updateDoc,
+      deleteDoc,
+      onSnapshot,
+      query,
+      orderBy,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyABAfmswXtD1o90u83DDWccRbh0HzuEOZo",
+      authDomain: "my-portfolio-3cdf8.firebaseapp.com",
+      projectId: "my-portfolio-3cdf8",
+      storageBucket: "my-portfolio-3cdf8.firebasestorage.app",
+      messagingSenderId: "781308525148",
+      appId: "1:781308525148:web:65f86ca8b97e8e6a2ec499",
+      measurementId: "G-7CR2PB5QP1"
+    };
+
+    // Initialize Firebase Services
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Initial 6 Default Projects for Seeding
+    const defaultProjects = [
+      {
+        title: 'Lumina Creative Studio',
+        subtitle: 'Luxury Brand Identity & Editorial Packaging System',
+        category: 'branding',
+        image: 'assets/images/project1.jpg',
+        client: 'Lumina Studios, London',
+        timeline: '4 Weeks',
+        tools: ['Adobe Illustrator', 'Photoshop', 'InDesign', 'Cinema 4D'],
+        description: 'A comprehensive brand identity overhaul for a boutique creative consultancy. Developed bespoke typographic hierarchy, iridescent holographic foil finishes on matte black stationery, luxury packaging architecture, and full brand guideline manuals.',
+        deliverables: ['Full Brand Book & Guidelines', 'Stationery & Packaging Suite', 'Social Media Asset Templates', 'Custom Vector Iconography'],
+        stats: '120% Increase in client brand perception score',
+        order: 1
+      },
+      {
+        title: 'Apex Crypto & SaaS Dashboard',
+        subtitle: 'Next-Generation FinTech & Analytics Platform UI/UX',
+        category: 'uiux',
+        image: 'assets/images/project2.jpg',
+        client: 'Apex Global Financial',
+        timeline: '6 Weeks',
+        tools: ['Figma', 'FigJam', 'Protopie', 'After Effects'],
+        description: 'End-to-end design of an ultra-modern multi-asset cryptocurrency trading and SaaS analytics interface. Designed responsive dashboard widgets, real-time telemetry charts, dark glassmorphism design language, and seamless companion mobile iOS/Android apps.',
+        deliverables: ['Design System with 180+ Components', 'Desktop Web App High-Fi Prototypes', 'iOS & Android Native Mobile Screens', 'Interactive Micro-Animations'],
+        stats: '48% Reduction in user onboarding drop-off',
+        order: 2
+      },
+      {
+        title: 'Neo-Chrome Static Series',
+        subtitle: '3D Kinetic Typographic Artwork & Campaign Posters',
+        category: 'graphics',
+        image: 'assets/images/project3.jpg',
+        client: 'Synergetic Future Fest',
+        timeline: '3 Weeks',
+        tools: ['Blender', 'Adobe Photoshop', 'Illustrator', 'Midjourney'],
+        description: 'An experimental 3D poster art series blending iridescent fluid chrome physics, kinetic typography, and cyber-synth aesthetics. Created for a prominent digital art and music festival spanning both print billboards and animated digital displays.',
+        deliverables: ['Set of 8 High-Res Vector/3D Posters', 'Social Media Animated Motion Clips', 'Print-Ready Large Format Billboards', 'NFT & Digital Collectibles Art'],
+        stats: 'Over 2.4M Impressions across social media',
+        order: 3
+      },
+      {
+        title: 'Vortex Creative AI',
+        subtitle: 'Next-Gen Brand Architecture & Identity System',
+        category: 'branding',
+        image: 'assets/images/project4.jpg',
+        client: 'Vortex Artificial Intelligence Inc.',
+        timeline: '5 Weeks',
+        tools: ['Illustrator', 'Figma', 'Keynote', 'Photoshop'],
+        description: 'Complete visual identity system and strategic brand architecture for a cutting-edge artificial intelligence creative platform. Centered around a glowing cyan Mobius symbol that represents continuous computational intelligence and human collaboration.',
+        deliverables: ['Core Logo & Responsive Marks', 'Comprehensive Style Guide (64 pages)', 'Corporate Stationery & Merch Design', 'Pitch Deck & Marketing Templates'],
+        stats: '$4.5M Series A funding pitch visual deck',
+        order: 4
+      },
+      {
+        title: 'Nexus Mobile Studio',
+        subtitle: 'AI Video Creator & Multi-Track Audio Timeline App',
+        category: 'uiux',
+        image: 'assets/images/project5.jpg',
+        client: 'Nexus Media Lab',
+        timeline: '7 Weeks',
+        tools: ['Figma', 'Adobe After Effects', 'Lottie', 'Miro'],
+        description: 'Designed a high-power video and audio editing smartphone app tailored specifically for mobile content creators and YouTubers. Featured intuitive gestures, AI voice synthesis timeline scrubber, sound waveform visualizers, and quick-export templates.',
+        deliverables: ['Mobile UX Wireframing & User Journeys', '85+ Production App Screens', 'Haptic & Gesture Interaction Prototypes', 'App Store Screenshot Mockup Kit'],
+        stats: '4.9★ App Store launch rating',
+        order: 5
+      },
+      {
+        title: 'Aetheria Holographic Showcase',
+        subtitle: 'Futuristic 3D Cyberpunk Digital Media Campaign',
+        category: 'graphics',
+        image: 'assets/images/project6.jpg',
+        client: 'Quantum Media Agency',
+        timeline: '4 Weeks',
+        tools: ['Blender 3D', 'Unreal Engine 5', 'After Effects', 'Photoshop'],
+        description: 'Created a futuristic cyberpunk 3D holographic digital art installation and experiential marketing showcase. Blended real-world spatial acrylic lighting with dynamic particle physics and neon holographic character visualization.',
+        deliverables: ['3D Holographic Spatial Art Keyframes', 'Promotional Video Motion Graphics', 'Event Stage Visual Display Loops', 'Press Kit & Promotional Print Assets'],
+        stats: 'Featured on Behance Curated Galleries',
+        order: 6
+      }
+    ];
+
+    // State Variables
+    let currentProjects = [];
+    let isSignUpMode = false;
+    let projectToDeleteId = null;
+    let activeFilter = 'all';
+    let searchQuery = '';
+
+    // DOM Elements
+    const authSection = document.getElementById('authSection');
+    const dashboardSection = document.getElementById('dashboardSection');
+    const authHeaderControls = document.getElementById('authHeaderControls');
+    const userEmailDisplay = document.getElementById('userEmailDisplay');
+    const authForm = document.getElementById('authForm');
+    const authEmail = document.getElementById('authEmail');
+    const authPassword = document.getElementById('authPassword');
+    const authSubmitBtn = document.getElementById('authSubmitBtn');
+    const authBtnText = document.getElementById('authBtnText');
+    const authFormTitle = document.getElementById('authFormTitle');
+    const authFormSubtitle = document.getElementById('authFormSubtitle');
+    const authToggleBtn = document.getElementById('authToggleBtn');
+    const authTogglePrompt = document.getElementById('authTogglePrompt');
+    const authErrorMsg = document.getElementById('authErrorMsg');
+    const authErrorText = document.getElementById('authErrorText');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Dashboard Elements
+    const adminProjectsGrid = document.getElementById('adminProjectsGrid');
+    const projectsLoadingState = document.getElementById('projectsLoadingState');
+    const projectsEmptyState = document.getElementById('projectsEmptyState');
+    const seedDefaultBtn = document.getElementById('seedDefaultBtn');
+    const addNewProjectBtn = document.getElementById('addNewProjectBtn');
+    const dashboardSearch = document.getElementById('dashboardSearch');
+    const adminFilterBtns = document.querySelectorAll('.admin-filter-btn');
+
+    // Stats Elements
+    const statTotalProjects = document.getElementById('statTotalProjects');
+    const statBranding = document.getElementById('statBranding');
+    const statUIUX = document.getElementById('statUIUX');
+    const statGraphics = document.getElementById('statGraphics');
+
+    // Project Edit Modal Elements
+    const projectEditModal = document.getElementById('projectEditModal');
+    const editModalBackdrop = document.getElementById('editModalBackdrop');
+    const closeEditModalBtn = document.getElementById('closeEditModalBtn');
+    const cancelFormBtn = document.getElementById('cancelFormBtn');
+    const projectForm = document.getElementById('projectForm');
+    const modalFormHeading = document.getElementById('modalFormHeading');
+    const saveBtnText = document.getElementById('saveBtnText');
+    const editProjectId = document.getElementById('editProjectId');
+    const projectTitle = document.getElementById('projectTitle');
+    const projectCategory = document.getElementById('projectCategory');
+    const projectSubtitle = document.getElementById('projectSubtitle');
+    const projectImage = document.getElementById('projectImage');
+    const projectDescription = document.getElementById('projectDescription');
+    const projectClient = document.getElementById('projectClient');
+    const projectTimeline = document.getElementById('projectTimeline');
+    const projectTools = document.getElementById('projectTools');
+    const projectStats = document.getElementById('projectStats');
+    const projectDeliverables = document.getElementById('projectDeliverables');
+    const previewImgBtn = document.getElementById('previewImgBtn');
+    const imgPreviewWrapper = document.getElementById('imgPreviewWrapper');
+    const imgPreview = document.getElementById('imgPreview');
+
+    // Delete Modal Elements
+    const deleteModal = document.getElementById('deleteModal');
+    const deleteItemTitle = document.getElementById('deleteItemTitle');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+    // Toast
+    const adminToast = document.getElementById('adminToast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIconWrapper = document.getElementById('toastIconWrapper');
+
+    function showToast(message, title = 'Success', isError = false) {
+      if (!adminToast) return;
+      toastTitle.textContent = title;
+      toastMessage.textContent = message;
+      if (isError) {
+        toastIconWrapper.className = 'w-9 h-9 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center flex-shrink-0';
+        toastIconWrapper.innerHTML = '<i data-lucide="alert-circle" class="w-5 h-5"></i>';
+      } else {
+        toastIconWrapper.className = 'w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0';
+        toastIconWrapper.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i>';
+      }
+      adminToast.classList.remove('opacity-0', 'invisible', 'translate-y-5');
+      adminToast.classList.add('opacity-100', 'visible', 'translate-y-0');
+      if (window.lucide) window.lucide.createIcons();
+
+      setTimeout(() => {
+        adminToast.classList.add('opacity-0', 'invisible', 'translate-y-5');
+        adminToast.classList.remove('opacity-100', 'visible', 'translate-y-0');
+      }, 4000);
+    }
+
+    // --- Authentication Flow ---
+    authToggleBtn.addEventListener('click', () => {
+      isSignUpMode = !isSignUpMode;
+      authErrorMsg.classList.add('hidden');
+      if (isSignUpMode) {
+        authFormTitle.textContent = 'Create Admin Account';
+        authFormSubtitle.textContent = 'Register a new administrator email and password for Firebase.';
+        authBtnText.textContent = 'Create Account';
+        authTogglePrompt.textContent = 'Already have an admin account?';
+        authToggleBtn.textContent = 'Sign In Instead';
+      } else {
+        authFormTitle.textContent = 'Admin Portal Sign In';
+        authFormSubtitle.textContent = 'Log in to manage your portfolio case studies and dynamic content.';
+        authBtnText.textContent = 'Sign In';
+        authTogglePrompt.textContent = 'First time setting up your admin account?';
+        authToggleBtn.textContent = 'Create Admin Account';
+      }
+    });
+
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      authErrorMsg.classList.add('hidden');
+      const email = authEmail.value.trim();
+      const password = authPassword.value;
+
+      authSubmitBtn.disabled = true;
+      authBtnText.textContent = isSignUpMode ? 'Creating Account...' : 'Signing In...';
+
+      try {
+        if (isSignUpMode) {
+          await createUserWithEmailAndPassword(auth, email, password);
+          showToast('Admin account created successfully!', 'Welcome');
+        } else {
+          await signInWithEmailAndPassword(auth, email, password);
+          showToast('Signed in successfully!', 'Authenticated');
+        }
+      } catch (err) {
+        authErrorMsg.classList.remove('hidden');
+        authErrorText.textContent = err.message || 'Authentication error occurred.';
+      } finally {
+        authSubmitBtn.disabled = false;
+        authBtnText.textContent = isSignUpMode ? 'Create Account' : 'Sign In';
+        if (window.lucide) window.lucide.createIcons();
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        showToast('You have signed out.', 'Logged Out');
+      } catch (err) {
+        showToast(err.message, 'Error', true);
+      }
+    });
+
+    // Auth state observer
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Logged in
+        authSection.classList.add('hidden');
+        dashboardSection.classList.remove('hidden');
+        authHeaderControls.classList.remove('hidden');
+        authHeaderControls.classList.add('flex');
+        userEmailDisplay.textContent = user.email;
+        listenToProjects();
+      } else {
+        // Logged out
+        authSection.classList.remove('hidden');
+        dashboardSection.classList.add('hidden');
+        authHeaderControls.classList.add('hidden');
+        authHeaderControls.classList.remove('flex');
+      }
+      if (window.lucide) window.lucide.createIcons();
+    });
+
+    // --- Firestore Realtime Listener ---
+    let unsubscribeFirestore = null;
+    function listenToProjects() {
+      if (unsubscribeFirestore) unsubscribeFirestore();
+
+      projectsLoadingState.classList.remove('hidden');
+      projectsEmptyState.classList.add('hidden');
+      adminProjectsGrid.classList.add('hidden');
+
+      const q = collection(db, 'projects');
+      unsubscribeFirestore = onSnapshot(q, (snapshot) => {
+        projectsLoadingState.classList.add('hidden');
+        currentProjects = [];
+
+        snapshot.forEach((doc) => {
+          currentProjects.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+
+        // Sort by order or createdAt
+        currentProjects.sort((a, b) => {
+          if (a.order !== undefined && b.order !== undefined) return a.order - b.order;
+          return 0;
+        });
+
+        updateStats();
+        renderAdminProjects();
+      }, (error) => {
+        projectsLoadingState.classList.add('hidden');
+        showToast('Firestore Error: ' + error.message, 'Database Error', true);
+      });
+    }
+
+    function updateStats() {
+      statTotalProjects.textContent = currentProjects.length;
+      statBranding.textContent = currentProjects.filter(p => (p.category || '').toLowerCase() === 'branding').length;
+      statUIUX.textContent = currentProjects.filter(p => (p.category || '').toLowerCase() === 'uiux').length;
+      statGraphics.textContent = currentProjects.filter(p => (p.category || '').toLowerCase() === 'graphics').length;
+    }
+
+    function renderAdminProjects() {
+      if (currentProjects.length === 0) {
+        projectsEmptyState.classList.remove('hidden');
+        adminProjectsGrid.classList.add('hidden');
+        return;
+      }
+
+      projectsEmptyState.classList.add('hidden');
+      adminProjectsGrid.classList.remove('hidden');
+      adminProjectsGrid.innerHTML = '';
+
+      const filtered = currentProjects.filter(item => {
+        const matchesFilter = activeFilter === 'all' || (item.category || '').toLowerCase() === activeFilter;
+        const q = searchQuery.toLowerCase();
+        const matchesSearch = !q ||
+          (item.title || '').toLowerCase().includes(q) ||
+          (item.description || '').toLowerCase().includes(q) ||
+          (item.client || '').toLowerCase().includes(q) ||
+          (Array.isArray(item.tools) ? item.tools.join(' ') : (item.tools || '')).toLowerCase().includes(q);
+        return matchesFilter && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        adminProjectsGrid.innerHTML = `
+          <div class="col-span-full py-12 text-center text-slate-400 text-sm">
+            No projects match the current search or filter criteria.
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(project => {
+        const card = document.createElement('div');
+        card.className = 'glass-panel rounded-3xl overflow-hidden border border-white/10 flex flex-col justify-between hover:border-indigo-500/40 transition-all';
+        
+        let categoryLabel = 'Branding';
+        let categoryBadgeColor = 'bg-indigo-600/30 text-indigo-300 border-indigo-500/30';
+        if (project.category === 'uiux') {
+          categoryLabel = 'UI/UX';
+          categoryBadgeColor = 'bg-cyan-600/30 text-cyan-300 border-cyan-500/30';
+        } else if (project.category === 'graphics') {
+          categoryLabel = 'Graphics & 3D';
+          categoryBadgeColor = 'bg-pink-600/30 text-pink-300 border-pink-500/30';
+        }
+
+        const toolsArray = Array.isArray(project.tools) ? project.tools : (project.tools ? project.tools.split(',') : []);
+
+        card.innerHTML = `
+          <div>
+            <div class="relative aspect-[16/10] overflow-hidden bg-dark-900">
+              <img src="${project.image || 'assets/images/project1.jpg'}" alt="${project.title}"
+                onerror="this.src='assets/images/project1.jpg'"
+                class="w-full h-full object-cover">
+              <div class="absolute top-3 left-3">
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${categoryBadgeColor} border backdrop-blur-md">
+                  ${categoryLabel}
+                </span>
+              </div>
+            </div>
+            <div class="p-5">
+              <h3 class="font-display text-lg font-bold text-white mb-1 truncate">${project.title}</h3>
+              <p class="text-xs text-indigo-300 font-medium mb-2 truncate">${project.subtitle || ''}</p>
+              <p class="text-xs text-slate-400 line-clamp-2 mb-4 leading-relaxed">${project.description || ''}</p>
+              
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                ${toolsArray.slice(0, 3).map(t => `<span class="px-2 py-0.5 rounded-md text-[10px] bg-dark-900 border border-white/10 text-slate-300">${t.trim()}</span>`).join('')}
+                ${toolsArray.length > 3 ? `<span class="px-1.5 py-0.5 rounded-md text-[10px] text-slate-500">+${toolsArray.length - 3}</span>` : ''}
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 pt-0 border-t border-white/[0.06] flex items-center justify-between mt-auto">
+            <span class="text-[11px] text-slate-500 font-mono">${project.timeline || '4 Weeks'}</span>
+            <div class="flex items-center gap-2">
+              <button type="button" data-edit-id="${project.id}"
+                class="edit-btn p-2 rounded-xl bg-dark-900 border border-white/10 text-slate-300 hover:text-white hover:border-indigo-500/40 hover:bg-indigo-600 transition-colors" title="Edit Project">
+                <i data-lucide="edit-3" class="w-4 h-4"></i>
+              </button>
+              <button type="button" data-delete-id="${project.id}" data-delete-title="${project.title}"
+                class="delete-btn p-2 rounded-xl bg-dark-900 border border-red-500/20 text-red-400 hover:text-white hover:bg-red-600 transition-colors" title="Delete Project">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+
+        adminProjectsGrid.appendChild(card);
+      });
+
+      // Attach Event Handlers
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-edit-id');
+          openEditModal(id);
+        });
+      });
+
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-delete-id');
+          const title = btn.getAttribute('data-delete-title');
+          openDeleteModal(id, title);
+        });
+      });
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    // --- Filter & Search Events ---
+    adminFilterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        adminFilterBtns.forEach(b => {
+          b.className = 'admin-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-dark-950 text-slate-400 hover:text-white border border-white/10 transition-colors';
+        });
+        btn.className = 'admin-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors';
+        activeFilter = btn.getAttribute('data-admin-filter');
+        renderAdminProjects();
+      });
+    });
+
+    dashboardSearch.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderAdminProjects();
+    });
+
+    // --- Add / Edit Project Modal Logic ---
+    function openEditModal(projectId = null) {
+      projectForm.reset();
+      imgPreviewWrapper.classList.add('hidden');
+      editProjectId.value = projectId || '';
+
+      if (projectId) {
+        modalFormHeading.textContent = 'Edit Portfolio Project';
+        saveBtnText.textContent = 'Update Project';
+        const proj = currentProjects.find(p => p.id === projectId);
+        if (proj) {
+          projectTitle.value = proj.title || '';
+          projectCategory.value = (proj.category || 'branding').toLowerCase();
+          projectSubtitle.value = proj.subtitle || '';
+          projectImage.value = proj.image || '';
+          projectDescription.value = proj.description || '';
+          projectClient.value = proj.client || '';
+          projectTimeline.value = proj.timeline || '';
+          projectTools.value = Array.isArray(proj.tools) ? proj.tools.join(', ') : (proj.tools || '');
+          projectStats.value = proj.stats || '';
+          projectDeliverables.value = Array.isArray(proj.deliverables) ? proj.deliverables.join(', ') : (proj.deliverables || '');
+
+          if (proj.image) {
+            imgPreview.src = proj.image;
+            imgPreviewWrapper.classList.remove('hidden');
+          }
+        }
+      } else {
+        modalFormHeading.textContent = 'Add New Portfolio Project';
+        saveBtnText.textContent = 'Save Project';
+      }
+
+      projectEditModal.classList.remove('hidden');
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function closeEditModal() {
+      projectEditModal.classList.add('hidden');
+      projectForm.reset();
+    }
+
+    addNewProjectBtn.addEventListener('click', () => openEditModal());
+    closeEditModalBtn.addEventListener('click', closeEditModal);
+    cancelFormBtn.addEventListener('click', closeEditModal);
+    editModalBackdrop.addEventListener('click', closeEditModal);
+
+    // Image Preview Helper
+    function updateImgPreview() {
+      const url = projectImage.value.trim();
+      if (url) {
+        imgPreview.src = url;
+        imgPreviewWrapper.classList.remove('hidden');
+      } else {
+        imgPreviewWrapper.classList.add('hidden');
+      }
+    }
+    previewImgBtn.addEventListener('click', updateImgPreview);
+    projectImage.addEventListener('blur', updateImgPreview);
+
+    // Project Form Save (Add / Update)
+    projectForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = editProjectId.value;
+
+      const toolsParsed = projectTools.value
+        .split(',')
+        .map(t => t.trim())
+        .filter(Boolean);
+
+      const deliverablesParsed = projectDeliverables.value
+        .split(/[\n,]+/)
+        .map(d => d.trim())
+        .filter(Boolean);
+
+      const projectData = {
+        title: projectTitle.value.trim(),
+        category: projectCategory.value,
+        subtitle: projectSubtitle.value.trim(),
+        image: projectImage.value.trim(),
+        description: projectDescription.value.trim(),
+        client: projectClient.value.trim() || 'Client Project',
+        timeline: projectTimeline.value.trim() || '4 Weeks',
+        tools: toolsParsed.length ? toolsParsed : ['Design'],
+        stats: projectStats.value.trim() || 'Featured Case Study',
+        deliverables: deliverablesParsed.length ? deliverablesParsed : ['High-Resolution Deliverables'],
+        updatedAt: serverTimestamp()
+      };
+
+      const saveBtn = document.getElementById('saveProjectBtn');
+      saveBtn.disabled = true;
+      saveBtnText.textContent = 'Saving...';
+
+      try {
+        if (id) {
+          // Update existing doc
+          const docRef = doc(db, 'projects', id);
+          await updateDoc(docRef, projectData);
+          showToast('Project updated successfully!');
+        } else {
+          // Add new doc
+          projectData.createdAt = serverTimestamp();
+          projectData.order = currentProjects.length + 1;
+          await addDoc(collection(db, 'projects'), projectData);
+          showToast('New project created and published!');
+        }
+        closeEditModal();
+      } catch (err) {
+        showToast('Error saving project: ' + err.message, 'Save Failed', true);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtnText.textContent = id ? 'Update Project' : 'Save Project';
+      }
+    });
+
+    // --- Delete Confirmation Modal Logic ---
+    function openDeleteModal(id, title) {
+      projectToDeleteId = id;
+      deleteItemTitle.textContent = title;
+      deleteModal.classList.remove('hidden');
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function closeDeleteModal() {
+      deleteModal.classList.add('hidden');
+      projectToDeleteId = null;
+    }
+
+    cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+
+    confirmDeleteBtn.addEventListener('click', async () => {
+      if (!projectToDeleteId) return;
+      confirmDeleteBtn.disabled = true;
+      confirmDeleteBtn.textContent = 'Deleting...';
+
+      try {
+        await deleteDoc(doc(db, 'projects', projectToDeleteId));
+        showToast('Project deleted successfully.');
+        closeDeleteModal();
+      } catch (err) {
+        showToast('Error deleting: ' + err.message, 'Delete Failed', true);
+      } finally {
+        confirmDeleteBtn.disabled = false;
+        confirmDeleteBtn.textContent = 'Delete Item';
+      }
+    });
+
+    // --- Seed Initial Portfolio Data Button ---
+    seedDefaultBtn.addEventListener('click', async () => {
+      if (!confirm('This will seed the 6 default portfolio case studies into Firestore. Continue?')) {
+        return;
+      }
+
+      seedDefaultBtn.disabled = true;
+      seedDefaultBtn.innerHTML = '<span class="animate-spin inline-block mr-1">⏳</span> Seeding...';
+
+      try {
+        let count = 0;
+        for (const item of defaultProjects) {
+          const docData = {
+            ...item,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          };
+          await addDoc(collection(db, 'projects'), docData);
+          count++;
+        }
+        showToast(`Successfully seeded ${count} default portfolio projects!`, 'Seeding Complete');
+      } catch (err) {
+        showToast('Error seeding: ' + err.message, 'Seed Failed', true);
+      } finally {
+        seedDefaultBtn.disabled = false;
+        seedDefaultBtn.innerHTML = '<i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i><span>Seed Initial Portfolio</span>';
+        if (window.lucide) window.lucide.createIcons();
+      }
+    });
+
+    // Initialize Lucide Icons on load
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  </script>
+</body>
+
+</html>
