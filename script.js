@@ -566,7 +566,51 @@ function initApp() {
     });
   }
 
+  // ==================== 8. COUNT-UP STATS ANIMATION ====================
+  function initCountUpStats() {
+    const statEls = document.querySelectorAll('[data-countup]');
+    if (!statEls.length) return;
+
+    const easeOutQuart = t => 1 - Math.pow(1 - t, 4);
+
+    const animateCounter = (el) => {
+      const target = parseFloat(el.dataset.countup);
+      const suffix = el.dataset.suffix || '';
+      const isDecimal = target % 1 !== 0;
+      const duration = 1800;
+      const start = performance.now();
+
+      const tick = (now) => {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeOutQuart(progress);
+        const current = target * eased;
+
+        el.textContent = (isDecimal ? current.toFixed(1) : Math.floor(current)) + suffix;
+
+        if (progress < 1) requestAnimationFrame(tick);
+        else el.textContent = (isDecimal ? target.toFixed(1) : target) + suffix;
+      };
+      requestAnimationFrame(tick);
+    };
+
+    // Trigger when the stats section enters the viewport
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    statEls.forEach(el => observer.observe(el));
+  }
+
+  initCountUpStats();
+
   // ==================== 9. SMOOTH SCROLLING ====================
+
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       const targetId = this.getAttribute('href');
