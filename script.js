@@ -125,7 +125,7 @@ let projectsData = { ...defaultProjectsData };
 let activeCategoryFilter = 'all';
 
 // ==================== 4. DOM INITIALIZATION ====================
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
   // Initialize Lucide Icons
   if (window.lucide) {
     window.lucide.createIcons();
@@ -579,7 +579,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ring = document.getElementById('customCursorRing');
     const canvas = document.getElementById('cursorParticleCanvas');
 
-    if (!dot || !ring || window.innerWidth <= 768) return;
+    if (!dot || !ring) return;
 
     let mouseX = -100;
     let mouseY = -100;
@@ -590,7 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Particle Trail Setup
     let ctx = null;
     const particles = [];
-    const maxParticles = 35;
+    const maxParticles = 40;
 
     if (canvas) {
       ctx = canvas.getContext('2d');
@@ -606,58 +606,66 @@ document.addEventListener('DOMContentLoaded', () => {
       constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.size = Math.random() * 3 + 1.2;
+        this.size = Math.random() * 3.5 + 1.5;
         this.alpha = 1;
-        this.decay = Math.random() * 0.035 + 0.025;
-        this.vx = (Math.random() - 0.5) * 1.5;
-        this.vy = (Math.random() - 0.5) * 1.5;
-        this.color = Math.random() > 0.4 ? 'rgba(56, 189, 248,' : 'rgba(99, 102, 241,';
+        this.decay = Math.random() * 0.03 + 0.02;
+        this.vx = (Math.random() - 0.5) * 1.8;
+        this.vy = (Math.random() - 0.5) * 1.8;
+        this.color = Math.random() > 0.4 ? '56, 189, 248' : '99, 102, 241';
       }
       update() {
         this.x += this.vx;
         this.y += this.vy;
         this.alpha -= this.decay;
-        this.size *= 0.95;
+        this.size *= 0.94;
       }
       draw(c) {
         if (this.alpha <= 0) return;
         c.beginPath();
         c.arc(this.x, this.y, Math.max(0.1, this.size), 0, Math.PI * 2);
-        c.fillStyle = `${this.color} ${this.alpha})`;
+        c.fillStyle = `rgba(${this.color}, ${this.alpha})`;
         c.shadowColor = '#38bdf8';
-        c.shadowBlur = 6;
+        c.shadowBlur = 8;
         c.fill();
         c.shadowBlur = 0;
       }
     }
 
-    // Mouse movement listeners
-    window.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+    const updatePosition = (clientX, clientY) => {
+      mouseX = clientX;
+      mouseY = clientY;
 
       if (!isVisible) {
         isVisible = true;
-        dot.classList.remove('cursor-hidden');
-        ring.classList.remove('cursor-hidden');
+        dot.classList.add('cursor-visible');
+        ring.classList.add('cursor-visible');
         ringX = mouseX;
         ringY = mouseY;
       }
 
-      // Dot moves instantly with zero latency
-      dot.style.left = `${mouseX}px`;
-      dot.style.top = `${mouseY}px`;
+      // Dot moves directly with cursor
+      dot.style.left = `${mouseX - 5}px`;
+      dot.style.top = `${mouseY - 5}px`;
 
-      // Spawn subtle sparkles when cursor moves
-      if (ctx && particles.length < maxParticles && Math.random() > 0.35) {
+      // Spawn subtle sparkles on movement
+      if (ctx && particles.length < maxParticles && Math.random() > 0.3) {
         particles.push(new SparkleParticle(mouseX, mouseY));
       }
-    });
+    };
+
+    window.addEventListener('pointermove', (e) => updatePosition(e.clientX, e.clientY), { passive: true });
+    window.addEventListener('mousemove', (e) => updatePosition(e.clientX, e.clientY), { passive: true });
 
     document.addEventListener('mouseleave', () => {
       isVisible = false;
-      dot.classList.add('cursor-hidden');
-      ring.classList.add('cursor-hidden');
+      dot.classList.remove('cursor-visible');
+      ring.classList.remove('cursor-visible');
+    });
+
+    document.addEventListener('mouseenter', () => {
+      isVisible = true;
+      dot.classList.add('cursor-visible');
+      ring.classList.add('cursor-visible');
     });
 
     // Interactive Hover on Buttons, Links & Cards
@@ -680,18 +688,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Mousedown click compression & particle burst
-    window.addEventListener('mousedown', () => {
+    window.addEventListener('pointerdown', (e) => {
       ring.classList.add('cursor-active');
       dot.classList.add('cursor-active');
 
       if (ctx) {
-        for (let i = 0; i < 8; i++) {
-          particles.push(new SparkleParticle(mouseX, mouseY));
+        for (let i = 0; i < 10; i++) {
+          particles.push(new SparkleParticle(e.clientX || mouseX, e.clientY || mouseY));
         }
       }
     });
 
-    window.addEventListener('mouseup', () => {
+    window.addEventListener('pointerup', () => {
       ring.classList.remove('cursor-active');
       dot.classList.remove('cursor-active');
     });
@@ -699,14 +707,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Animation Loop: Smooth Ring Lerp & Particles
     function renderCursor() {
       if (isVisible) {
-        // Smooth natural inertia for the follower ring
-        ringX += (mouseX - ringX) * 0.16;
-        ringY += (mouseY - ringY) * 0.16;
+        ringX += (mouseX - ringX) * 0.18;
+        ringY += (mouseY - ringY) * 0.18;
         ring.style.left = `${ringX}px`;
         ring.style.top = `${ringY}px`;
       }
 
-      // Draw particle sparkles
       if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         for (let i = particles.length - 1; i >= 0; i--) {
@@ -726,6 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize Custom Cursor
   initModernCustomCursor();
+
 
 
 
@@ -817,4 +824,10 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     if (window.lucide) window.lucide.createIcons();
   }, 150);
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
