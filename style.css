@@ -361,104 +361,7 @@
   display: block;
 }
 
-/* ==================== MODERN INTERACTIVE CURSOR ==================== */
-.custom-cursor-dot {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #38bdf8;
-  box-shadow: 0 0 16px 3px rgba(56, 189, 248, 0.95), 0 0 6px #ffffff;
-  pointer-events: none;
-  z-index: 10000;
-  opacity: 0;
-  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, background-color 0.25s ease;
-  will-change: transform, left, top;
-}
 
-.custom-cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(99, 102, 241, 0.75);
-  box-shadow: 0 0 25px rgba(99, 102, 241, 0.5), inset 0 0 12px rgba(6, 182, 212, 0.25);
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(6, 182, 212, 0.05) 60%, transparent 100%);
-  backdrop-filter: blur(2px);
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0;
-  margin-top: -21px;
-  margin-left: -21px;
-  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              height 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              margin 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              background 0.25s ease,
-              border-color 0.25s ease,
-              box-shadow 0.25s ease,
-              opacity 0.25s ease;
-  will-change: transform, left, top;
-}
-
-.custom-cursor-dot.cursor-visible,
-.custom-cursor-ring.cursor-visible {
-  opacity: 1;
-}
-
-/* Hover over clickable interactive elements */
-.custom-cursor-ring.cursor-hover {
-  width: 64px;
-  height: 64px;
-  margin-top: -32px;
-  margin-left: -32px;
-  border-color: rgba(6, 182, 212, 0.95);
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.25) 0%, rgba(99, 102, 241, 0.15) 60%, transparent 100%);
-  box-shadow: 0 0 35px rgba(6, 182, 212, 0.7), inset 0 0 20px rgba(99, 102, 241, 0.4);
-  border-width: 2px;
-}
-
-.custom-cursor-dot.cursor-hover {
-  transform: scale(0.6);
-  background: #ffffff;
-  box-shadow: 0 0 20px 4px #38bdf8;
-}
-
-/* Click Active compression */
-.custom-cursor-ring.cursor-active {
-  transform: scale(0.75);
-  border-color: #ec4899;
-  background: rgba(236, 72, 153, 0.3);
-  box-shadow: 0 0 30px rgba(236, 72, 153, 0.7);
-}
-
-.custom-cursor-dot.cursor-active {
-  transform: scale(1.5);
-  background: #ec4899;
-  box-shadow: 0 0 20px 4px #ec4899;
-}
-
-/* Particle Trailing Canvas */
-.cursor-particle-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 9998;
-}
-
-@media (max-width: 768px) {
-  .custom-cursor-dot,
-  .custom-cursor-ring,
-  .cursor-particle-canvas {
-    display: none !important;
-  }
-}
 
 /* ==================== iOS 27 GLASS ROUND HEADER THEME ==================== */
 .ios-glass-pill {
@@ -484,25 +387,5 @@
     transform: translateY(-3px);
   }
 }
-
-/* ==================== RIPPLE DISTORTION LAYER ==================== */
-.ripple-distortion-layer {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 30;
-  overflow: hidden;
-}
-
-.ripple-distortion-layer canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-
 
 
