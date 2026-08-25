@@ -612,10 +612,76 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // ==================== 10. VANTA.JS WAVES HERO BACKGROUND ====================
+  if (window.VANTA && window.VANTA.WAVES) {
+    try {
+      window.VANTA.WAVES({
+        el: "#hero-vanta-bg",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: 0x080418,
+        shininess: 18.00,
+        waveHeight: 18.00,
+        waveSpeed: 1.45,
+        zoom: 1.07
+      });
+    } catch (err) {
+      console.warn("Vanta Waves background notice:", err);
+    }
+  }
+
+  // ==================== 11. HERO DYNAMIC TYPING ANIMATION ====================
+  const typewriterElem = document.getElementById('hero-typewriter');
+  if (typewriterElem) {
+    const phrases = [
+      'Visual Identities',
+      'Digital Experiences',
+      'UI/UX Systems',
+      '3D Brand Assets',
+      'Motion Graphics'
+    ];
+    let phraseIndex = 0;
+    let charIndex = phrases[0].length;
+    let isDeleting = true;
+
+    // Start typing cycle after initial reveal
+    setTimeout(() => {
+      typeEffect();
+    }, 2400);
+
+    function typeEffect() {
+      const currentPhrase = phrases[phraseIndex];
+
+      if (isDeleting) {
+        charIndex--;
+        typewriterElem.textContent = currentPhrase.substring(0, charIndex);
+        if (charIndex === 0) {
+          isDeleting = false;
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+          setTimeout(typeEffect, 400);
+          return;
+        }
+        setTimeout(typeEffect, 45);
+      } else {
+        charIndex++;
+        typewriterElem.textContent = phrases[phraseIndex].substring(0, charIndex);
+        if (charIndex === phrases[phraseIndex].length) {
+          isDeleting = true;
+          setTimeout(typeEffect, 2200);
+          return;
+        }
+        setTimeout(typeEffect, 80);
+      }
+    }
+  }
+
   // Re-run icons after 150ms
   setTimeout(() => {
     if (window.lucide) window.lucide.createIcons();
   }, 150);
 });
-
-// 

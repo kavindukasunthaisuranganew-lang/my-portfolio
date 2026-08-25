@@ -242,3 +242,128 @@
     display: none;
   }
 }
+
+/* ==================== HERO SECTION ENHANCEMENTS ==================== */
+
+/* Hero Entrance Animations */
+@keyframes heroFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-anim-1 { animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
+.hero-anim-2 { animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both; }
+.hero-anim-3 { animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both; }
+.hero-anim-4 { animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both; }
+.hero-anim-5 { animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both; }
+
+/* Dynamic Typing Cursor */
+.typing-cursor {
+  position: relative;
+  display: inline-block;
+  min-height: 1.15em;
+}
+
+.typing-cursor::after {
+  content: '|';
+  color: #38bdf8;
+  animation: blinkCursor 0.85s infinite;
+  margin-left: 3px;
+  font-weight: 300;
+  display: inline-block;
+}
+
+@keyframes blinkCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Primary CTA Button: Vibrant Gradient Flow & Shimmer Sweep */
+.btn-hero-primary {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #06b6d4 100%);
+  background-size: 200% 200%;
+  animation: gradientFlow 4s ease infinite;
+  box-shadow: 0 0 25px -4px rgba(99, 102, 241, 0.5), 0 10px 25px -5px rgba(124, 58, 237, 0.4);
+}
+
+.btn-hero-primary:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 0 35px 2px rgba(99, 102, 241, 0.75), 0 15px 35px -5px rgba(6, 182, 212, 0.6);
+}
+
+.btn-hero-primary:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+.btn-hero-primary .btn-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-25deg);
+  animation: shimmerSweep 3.2s infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerSweep {
+  0% { left: -100%; }
+  35%, 100% { left: 220%; }
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Secondary CTA Button: Cyber Glass with Glowing Animated Border */
+.btn-hero-secondary {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.btn-hero-secondary:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(99, 102, 241, 0.65);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 0 30px -2px rgba(99, 102, 241, 0.45), 0 10px 25px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+}
+
+.btn-hero-secondary:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+.btn-hero-secondary .btn-border-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(6, 182, 212, 0.8), rgba(168, 85, 247, 0.8));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.btn-hero-secondary:hover .btn-border-glow {
+  opacity: 1;
+}
+
+/* Vanta Waves Canvas Adjustments */
+#hero-vanta-bg canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
