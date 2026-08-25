@@ -62,6 +62,10 @@
 
 <body class="bg-dark-950 text-slate-200 antialiased relative selection:bg-indigo-600 selection:text-white">
 
+  <!-- Full Website 3D Vanta Waves Dynamic Background Canvas -->
+  <div id="website-vanta-bg" class="fixed inset-0 w-full h-full -z-50 pointer-events-none overflow-hidden"></div>
+  <div class="fixed inset-0 bg-dark-950/45 pointer-events-none -z-40"></div>
+
   <!-- Subtle Cursor Ambient Glow (Desktop) -->
   <div id="cursorGlow" class="cursor-glow"></div>
 
@@ -155,12 +159,8 @@
   <main>
     <!-- ==================== 2. HERO SECTION ==================== -->
     <section id="hero" class="relative min-h-[92vh] flex items-center justify-center pt-36 pb-24 md:pt-44 md:pb-32 overflow-hidden">
-      <!-- Vanta Waves Background Canvas Container -->
-      <div id="hero-vanta-bg" class="absolute inset-0 w-full h-full -z-10 overflow-hidden"></div>
-      
-      <!-- Gradient Overlays for Seamless Blending & Maximum Text Legibility -->
-      <div class="absolute inset-0 bg-gradient-to-b from-dark-950/80 via-dark-950/50 to-dark-950 -z-10 pointer-events-none"></div>
-      <div class="absolute inset-0 bg-radial-gradient from-indigo-900/25 via-transparent to-transparent -z-10 pointer-events-none"></div>
+      <!-- Gradient Overlays for Depth and Contrast -->
+      <div class="absolute inset-0 bg-gradient-to-b from-dark-950/40 via-transparent to-dark-950/70 -z-10 pointer-events-none"></div>
 
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
 

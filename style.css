@@ -361,9 +361,20 @@
   opacity: 1;
 }
 
-/* Vanta Waves Canvas Adjustments */
-#hero-vanta-bg canvas {
+/* Full Website Vanta Waves Canvas Adjustments */
+#website-vanta-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -50;
+  pointer-events: none;
+}
+
+#website-vanta-bg canvas {
   width: 100% !important;
   height: 100% !important;
   display: block;
 }
+

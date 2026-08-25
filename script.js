@@ -612,11 +612,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ==================== 10. VANTA.JS WAVES HERO BACKGROUND ====================
+  // ==================== 10. VANTA.JS WAVES FULL WEBSITE BACKGROUND ====================
   if (window.VANTA && window.VANTA.WAVES) {
     try {
       window.VANTA.WAVES({
-        el: "#hero-vanta-bg",
+        el: "#website-vanta-bg",
         mouseControls: true,
         touchControls: true,
         gyroControls: false,
@@ -624,14 +624,14 @@ document.addEventListener('DOMContentLoaded', () => {
         minWidth: 200.00,
         scale: 1.00,
         scaleMobile: 1.00,
-        color: 0x080418,
+        color: 0x80418,
         shininess: 18.00,
         waveHeight: 18.00,
         waveSpeed: 1.45,
         zoom: 1.07
       });
     } catch (err) {
-      console.warn("Vanta Waves background notice:", err);
+      console.warn("Vanta Waves website background notice:", err);
     }
   }
 
