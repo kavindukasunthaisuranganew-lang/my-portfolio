@@ -222,7 +222,7 @@ function initApp() {
     }
     if (modalTitle) modalTitle.textContent = data.title || '';
     if (modalSubtitle) modalSubtitle.textContent = data.subtitle || '';
-    
+
     let catDisplay = 'Branding & Identity';
     if ((data.category || '').toLowerCase() === 'uiux') catDisplay = 'UI/UX Platform';
     else if ((data.category || '').toLowerCase() === 'graphics') catDisplay = 'Graphics & 3D';
@@ -310,7 +310,7 @@ function initApp() {
     projectKeys.forEach((key) => {
       const project = projectsData[key];
       const categoryKey = (project.category || 'branding').toLowerCase();
-      
+
       let badgeLabel = 'Branding & Identity';
       let borderHover = 'hover:border-indigo-500/40 hover:shadow-indigo-500/10';
       let tagBadgeStyle = 'bg-dark-950/80 text-indigo-300 border-indigo-500/30';
@@ -472,7 +472,7 @@ function initApp() {
   function showToast(message, isSuccess = true) {
     if (!toastNotification || !toastMessage) return;
     toastMessage.textContent = message;
-    
+
     const iconWrapper = document.getElementById('siteToastIconWrapper');
     if (iconWrapper) {
       if (isSuccess) {
