@@ -293,6 +293,83 @@ function initApp() {
   const portfolioGrid = document.getElementById('portfolioGrid');
   const filterButtons = document.querySelectorAll('.portfolio-filter-btn');
 
+  // Helper to extract dominant color from image and convert to HSL
+  function getDominantColor(imgEl, callback) {
+    if (!imgEl.complete || imgEl.naturalWidth === 0) {
+      imgEl.addEventListener('load', () => getDominantColor(imgEl, callback));
+      return;
+    }
+    
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 10;
+      canvas.height = 10;
+      ctx.drawImage(imgEl, 0, 0, 10, 10);
+      
+      const imgData = ctx.getImageData(0, 0, 10, 10).data;
+      let r = 0, g = 0, b = 0, count = 0;
+      
+      for (let i = 0; i < imgData.length; i += 4) {
+        const pr = imgData[i];
+        const pg = imgData[i+1];
+        const pb = imgData[i+2];
+        const pa = imgData[i+3];
+        
+        if (pa < 100) continue; // skip transparent
+        
+        r += pr;
+        g += pg;
+        b += pb;
+        count++;
+      }
+      
+      if (count === 0) {
+        callback(null);
+        return;
+      }
+      
+      r = Math.round(r / count);
+      g = Math.round(g / count);
+      b = Math.round(b / count);
+      
+      const hsl = rgbToHsl(r, g, b);
+      // Ensure color is saturated enough for badges & actions
+      if (hsl.s < 45) hsl.s = 55;
+      if (hsl.l < 35) hsl.l = 35;
+      if (hsl.l > 70) hsl.l = 60;
+      
+      callback({ r, g, b, h: hsl.h, s: hsl.s, l: hsl.l });
+    } catch (e) {
+      console.warn("Could not extract dominant color:", e);
+      callback(null);
+    }
+  }
+
+  function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+
+    if (max === min) {
+      h = s = 0;
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+    return {
+      h: Math.round(h * 360),
+      s: Math.round(s * 100),
+      l: Math.round(l * 100)
+    };
+  }
+
   function renderPortfolioItems() {
     if (!portfolioGrid) return;
     portfolioGrid.innerHTML = '';
@@ -312,26 +389,12 @@ function initApp() {
       const categoryKey = (project.category || 'branding').toLowerCase();
       
       let badgeLabel = 'Branding & Identity';
-      let borderHover = 'hover:border-indigo-500/40 hover:shadow-indigo-500/10';
-      let tagBadgeStyle = 'bg-dark-950/80 text-indigo-300 border-indigo-500/30';
-      let titleHover = 'group-hover:text-indigo-300';
-      let exploreColor = 'text-indigo-400';
-      let btnBg = 'bg-indigo-600 shadow-indigo-600/40 hover:bg-indigo-500';
-
       if (categoryKey === 'uiux') {
         badgeLabel = 'UI/UX Platform';
-        borderHover = 'hover:border-cyan-500/40 hover:shadow-cyan-500/10';
-        tagBadgeStyle = 'bg-dark-950/80 text-cyan-300 border-cyan-500/30';
-        titleHover = 'group-hover:text-cyan-300';
-        exploreColor = 'text-cyan-400';
-        btnBg = 'bg-cyan-600 shadow-cyan-600/40 hover:bg-cyan-500';
       } else if (categoryKey === 'graphics') {
         badgeLabel = 'Graphics & 3D';
-        borderHover = 'hover:border-pink-500/40 hover:shadow-pink-500/10';
-        tagBadgeStyle = 'bg-dark-950/80 text-pink-300 border-pink-500/30';
-        titleHover = 'group-hover:text-pink-300';
-        exploreColor = 'text-pink-400';
-        btnBg = 'bg-pink-600 shadow-pink-600/40 hover:bg-pink-500';
+      } else if (project.category) {
+        badgeLabel = project.category;
       }
 
       const toolsList = Array.isArray(project.tools)
@@ -339,7 +402,7 @@ function initApp() {
         : (project.tools || 'Design');
 
       const card = document.createElement('div');
-      card.className = `portfolio-item group flex flex-col glass-panel rounded-3xl overflow-hidden cursor-pointer border border-white/10 ${borderHover} transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl`;
+      card.className = `portfolio-item dynamic-theme group flex flex-col glass-panel rounded-3xl overflow-hidden cursor-pointer border border-white/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl`;
       card.setAttribute('data-category', categoryKey);
       card.setAttribute('data-project-id', key);
 
@@ -347,24 +410,24 @@ function initApp() {
         <div class="relative aspect-[4/3] overflow-hidden bg-dark-900">
           <img src="${project.image || 'assets/images/project1.jpg'}" alt="${project.title}"
             onerror="this.src='assets/images/project1.jpg'"
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            class="project-card-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
           <div
             class="absolute inset-0 bg-dark-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-6 backdrop-blur-[2px]">
             <button type="button" data-project-id="${key}"
-              class="preview-project-btn inline-flex items-center gap-2 px-4 py-2.5 rounded-full ${btnBg} text-white font-semibold text-xs shadow-lg transition-colors">
+              class="preview-project-btn btn-theme inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-white font-semibold text-xs shadow-lg transition-colors">
               <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
               <span>Quick View Case Study</span>
             </button>
           </div>
           <div class="absolute top-4 left-4">
-            <span class="px-3 py-1 rounded-full text-xs font-semibold ${tagBadgeStyle} border backdrop-blur-md">
+            <span class="badge-theme px-3 py-1 rounded-full text-xs font-semibold border backdrop-blur-md">
               ${badgeLabel}
             </span>
           </div>
         </div>
         <div class="p-6 flex-1 flex flex-col justify-between">
           <div>
-            <h3 class="font-display text-xl font-bold text-white ${titleHover} transition-colors mb-2">
+            <h3 class="title-theme font-display text-xl font-bold text-white transition-colors mb-2">
               ${project.title}
             </h3>
             <p class="text-slate-400 text-xs leading-relaxed line-clamp-2">
@@ -373,13 +436,48 @@ function initApp() {
           </div>
           <div class="pt-4 mt-4 border-t border-white/[0.08] flex items-center justify-between">
             <span class="text-[11px] font-mono text-slate-500 truncate max-w-[65%]">${toolsList}</span>
-            <span class="text-xs font-semibold ${exploreColor} flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+            <span class="explore-theme text-xs font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
               <span>Explore</span>
               <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </span>
           </div>
         </div>
       `;
+
+      // Extract colors from the image and apply them as custom variables on the card element
+      const imgEl = card.querySelector('.project-card-image');
+      if (imgEl) {
+        const applyColor = () => {
+          getDominantColor(imgEl, (color) => {
+            if (color) {
+              card.style.setProperty('--theme-r', color.r);
+              card.style.setProperty('--theme-g', color.g);
+              card.style.setProperty('--theme-b', color.b);
+              card.style.setProperty('--theme-h', color.h);
+              card.style.setProperty('--theme-s', color.s + '%');
+              card.style.setProperty('--theme-l', color.l + '%');
+            } else {
+              // Fallback based on category
+              let fb = { r: 99, g: 102, b: 241, h: 239, s: 84, l: 67 }; // Indigo
+              if (categoryKey === 'uiux') fb = { r: 6, g: 182, b: 212, h: 189, s: 95, l: 43 }; // Cyan
+              else if (categoryKey === 'graphics') fb = { r: 236, g: 72, b: 153, h: 330, s: 81, l: 60 }; // Pink
+              
+              card.style.setProperty('--theme-r', fb.r);
+              card.style.setProperty('--theme-g', fb.g);
+              card.style.setProperty('--theme-b', fb.b);
+              card.style.setProperty('--theme-h', fb.h);
+              card.style.setProperty('--theme-s', fb.s + '%');
+              card.style.setProperty('--theme-l', fb.l + '%');
+            }
+          });
+        };
+
+        if (imgEl.complete) {
+          applyColor();
+        } else {
+          imgEl.addEventListener('load', applyColor);
+        }
+      }
 
       // Attach Card Click
       card.addEventListener('click', () => {
@@ -401,6 +499,7 @@ function initApp() {
     applyCategoryFilter(activeCategoryFilter);
     if (window.lucide) window.lucide.createIcons();
   }
+
 
   function applyCategoryFilter(filterValue) {
     activeCategoryFilter = filterValue;

@@ -388,4 +388,39 @@
   }
 }
 
+/* Dynamic Card Themes using CSS Variables */
+.portfolio-item.dynamic-theme {
+  background: linear-gradient(135deg, rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.08) 0%, rgba(11, 15, 25, 0.8) 100%) !important;
+  border-color: rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.15) !important;
+}
+
+.portfolio-item.dynamic-theme:hover {
+  border-color: rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.5) !important;
+  box-shadow: 0 20px 40px -15px rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.25) !important;
+}
+
+.portfolio-item.dynamic-theme .badge-theme {
+  background-color: rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.15) !important;
+  color: hsl(var(--theme-h), var(--theme-s), 75%) !important;
+  border-color: rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.3) !important;
+}
+
+.portfolio-item.dynamic-theme:hover .title-theme {
+  color: hsl(var(--theme-h), var(--theme-s), 75%) !important;
+}
+
+.portfolio-item.dynamic-theme .btn-theme {
+  background-color: hsl(var(--theme-h), var(--theme-s), 50%) !important;
+  box-shadow: 0 4px 14px 0 rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.4) !important;
+}
+
+.portfolio-item.dynamic-theme .btn-theme:hover {
+  background-color: hsl(var(--theme-h), var(--theme-s), 45%) !important;
+}
+
+.portfolio-item.dynamic-theme .explore-theme {
+  color: hsl(var(--theme-h), var(--theme-s), 60%) !important;
+}
+
+
 
