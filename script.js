@@ -793,6 +793,20 @@ function initApp() {
     }
   }
 
+  // Navbar Scroll & Shrink animation
+  const navbar = document.getElementById('navbar');
+  if (navbar) {
+    const handleScroll = () => {
+      if (window.scrollY > 25) {
+        navbar.classList.add('navbar-scrolled');
+      } else {
+        navbar.classList.remove('navbar-scrolled');
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial run
+  }
+
   // Re-run icons after 150ms
   setTimeout(() => {
     if (window.lucide) window.lucide.createIcons();
